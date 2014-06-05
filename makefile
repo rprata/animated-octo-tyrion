@@ -27,10 +27,10 @@ F_CPU = 16000000L
 FORMAT = ihex
 
 #Source Settings
-APPLICATION = main
-SOURCE = $(APPLICATION).c
+APPLICATION = wireless-sensor-receiver
+SOURCE = $(APPLICATION).c adc.c hserial.c handlers.c interruptions.c
 CFLAGS =  -Wp, -w -Os 
-CINCS = -I./inc
+INCLUDES = -I./includes
 BIN = bin/$(APPLICATION)
 HEX = hex/$(APPLICATION).hex
 MKDIR_P = mkdir -p bin/ hex/
@@ -38,7 +38,7 @@ RM_RF = rm -rf bin/ hex/
 	
 #Upload Settings
 AVRDUDE_PROGRAMMER = arduino
-AVR_PORT = /dev/ttyUSB0
+AVR_PORT = /dev/ttyUSB1
 AVRDUDE_FLAGS = -F -V 
 AVRDUDE_FLASH = -U flash:w:$(HEX)
 UPLOAD_RATE_DUEMILANOVE = 57600
@@ -46,7 +46,7 @@ UPLOAD_RATE_UNO = 115200
 
 all:
 	$(MKDIR_P)
-	$(CC) $(CFLAGS) -DF_CPU=$(F_CPU) $(CINCS) -mmcu=$(MCU) $(SOURCE) -o $(BIN)
+	$(CC) $(CFLAGS) -DF_CPU=$(F_CPU) $(INCLUDES) -mmcu=$(MCU) $(SOURCE) -o $(BIN)
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $(BIN) $(HEX)
 
 upload-uno:
